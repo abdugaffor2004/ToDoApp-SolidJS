@@ -1,3 +1,3 @@
-import { MainPanel } from './components/MainPanel/MainPanel';
+import { MainPanel } from './components/MainPanel';
 
 export const App = () => <MainPanel />;

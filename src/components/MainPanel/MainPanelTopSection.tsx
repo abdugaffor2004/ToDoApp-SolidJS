@@ -1,5 +1,5 @@
 import { IconPlus } from '@tabler/icons-solidjs';
-import { TimerToggle } from '../Timer/TimerToggle';
+import { TimerToggle } from '../TimerToggle';
 
 export const MainPanelTopSection = () => (
   <div class="flex justify-between items-center mb-[60px]">
