@@ -3,8 +3,7 @@ import { render } from 'solid-js/web';
 import './index.css';
 
 import { App } from './App.tsx';
-import { QueryClientProvider } from '@tanstack/solid-query';
-import { QueryClient } from '@tanstack/query-core';
+import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 
 const queryClient = new QueryClient();
 const root = document.getElementById('root');

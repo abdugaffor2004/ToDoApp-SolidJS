@@ -6,14 +6,21 @@ import { useGetTasks } from './hooks/useTasksQuery';
 export const MainPanel = () => {
   const query = useGetTasks();
   return (
-    <ErrorBoundary fallback={'Что-то пошло не так'}>
-      <Suspense fallback={'Loading...'}>
-        <div class="bg-white w-full p-[2rem] min-h-[90vh] rounded-2xl flex flex-col gap-3">
-          <MainPanelTopSection />
+    <Suspense
+      fallback={<div class="w-full flex justify-center">Loading...</div>}
+    >
+      <div class="bg-white w-full p-[2rem] min-h-[90vh] rounded-2xl flex flex-col gap-3">
+        <MainPanelTopSection />
 
-          <For each={query.data}>{(task) => <TaskCard task={task} />}</For>
-        </div>
-      </Suspense>
-    </ErrorBoundary>
+        <For
+          each={query.data}
+          fallback={
+            <div class="flex justify-center text-xl">Здесь пока пусто</div>
+          }
+        >
+          {(task) => <TaskCard task={task} />}
+        </For>
+      </div>
+    </Suspense>
   );
 };

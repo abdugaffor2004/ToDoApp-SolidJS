@@ -1,14 +1,8 @@
 import { IconTrash } from '@tabler/icons-solidjs';
 import { createSignal } from 'solid-js';
 import { BadgeSelect, type Priority } from '../BadgeSelect/BadgeSelect';
-
-export interface Task {
-  id: string;
-  title: string;
-  description: string;
-  priority: Priority;
-  isCompleted: boolean;
-}
+import type { Task } from '../../types/Task';
+import { useDeleteTask } from '../MainPanel/hooks/useTasksQuery';
 
 interface TaskProps {
   task: Task;
@@ -21,6 +15,7 @@ export const TaskCard = (props: TaskProps) => {
   const [isOpen, setIsOpen] = createSignal(false);
   const hasDescription = props.task.description;
 
+  const { mutate: deleteTask } = useDeleteTask();
   return (
     <div
       class={`collapse bg-base-100 border border-base-300 shadow-xs ${
@@ -48,8 +43,15 @@ export const TaskCard = (props: TaskProps) => {
           onClick={(e) => e.stopPropagation()}
           class="flex gap-4 items-center"
         >
-          <BadgeSelect options={PRIORITIES} value={props.task.priority} />
-          <button class="btn btn-square bg-transparent border-0 hover:bg-red-100">
+          <BadgeSelect
+            onChange={() => {}}
+            options={PRIORITIES}
+            value={props.task.priority}
+          />
+          <button
+            onClick={() => deleteTask(props.task.id)}
+            class="btn btn-square bg-transparent border-0 hover:bg-red-100"
+          >
             <IconTrash color="red" />
           </button>
         </div>
