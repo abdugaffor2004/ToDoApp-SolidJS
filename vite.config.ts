@@ -4,4 +4,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [solid(), tailwindcss()],
+  server: {
+    watch: {
+      ignored: '**/db.json',
+    },
+  },
 });
