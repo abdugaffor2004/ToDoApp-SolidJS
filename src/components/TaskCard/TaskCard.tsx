@@ -77,6 +77,7 @@ export const TaskCard = (props: TaskProps) => {
             onChange={(priorityValue) => setStore('priority', priorityValue)}
             options={PRIORITIES}
             value={store.priority}
+            offset={{top:10, left: 0}}
           />
           <button
             onClick={() => deleteTask(props.task.id)}

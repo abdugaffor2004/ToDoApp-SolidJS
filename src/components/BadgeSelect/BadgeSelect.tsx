@@ -1,18 +1,33 @@
 import { IconChevronDown, IconCircleFilled } from '@tabler/icons-solidjs';
-import { createMemo, For } from 'solid-js';
+import { createMemo, For, mergeProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { getPosition } from '../../utils/getElementPosition';
 import { COLORS } from '../../constants';
 
 export type Priority = 'low' | 'medium' | 'high';
+interface Offset {
+  top: number;
+  left: number;
+}
 
 interface BadgeSelectProps {
   options: Priority[];
   value: Priority;
+  offset?: Offset;
   onChange: (priority: Priority) => void;
 }
 
-export const BadgeSelect = (props: BadgeSelectProps) => {
+export const BadgeSelect = (initialProps: BadgeSelectProps) => {
+  const props = mergeProps(
+    {
+      offset: {
+        top: 0,
+        left: 0,
+      },
+    },
+    initialProps
+  );
+
   let buttonRef!: HTMLButtonElement;
   let dropdownRef!: HTMLDivElement;
 
@@ -40,13 +55,11 @@ export const BadgeSelect = (props: BadgeSelectProps) => {
           ref={dropdownRef}
           class="fixed z-[999] hidden"
           style={{
-            top: `${getPosition(buttonRef).top}px`,
-            left: `${
-              getPosition(buttonRef).left + buttonRef.offsetWidth / 18
-            }px`,
+            top: `${getPosition(buttonRef).top + props.offset.top}px`,
+            left: `${getPosition(buttonRef).left + props.offset.left}px`,
           }}
         >
-          <div class="menu bg-white text-black drop-shadow-xl mt-4 gap-2 min-w-28">
+          <div class="menu bg-white text-black drop-shadow-xl mt-2 gap-2 min-w-28">
             <For each={props.options}>
               {(option) => {
                 return (
