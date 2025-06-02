@@ -1,5 +1,5 @@
 import { IconChevronDown, IconCircleFilled } from '@tabler/icons-solidjs';
-import { For } from 'solid-js';
+import { createMemo, For } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { getPosition } from '../../utils/getElementPosition';
 import { COLORS } from '../../constants';
@@ -16,28 +16,27 @@ export const BadgeSelect = (props: BadgeSelectProps) => {
   let buttonRef!: HTMLButtonElement;
   let dropdownRef!: HTMLDivElement;
 
+  const initialColor = createMemo(() => COLORS[props.value]);
+
   return (
     <div class="relative">
       <button
-        onBlur={() => (dropdownRef.style.display = 'none')}
         ref={buttonRef}
         onClick={(e) => {
           dropdownRef.style.display = 'block';
+          dropdownRef.focus();
           e.stopPropagation();
         }}
-        class={`badge badge-xl border-${COLORS[props.value]}-500  bg-${
-          COLORS[props.value]
-        }-100`}
+        class={`badge badge-xl border-${initialColor()}-500  bg-${initialColor()}-100`}
       >
-        <IconCircleFilled color={COLORS[props.value]} size={10} />
-        <h4 class={`text-sm text-${COLORS[props.value]}-500 `}>
-          {props.value}
-        </h4>
-        <IconChevronDown color={COLORS[props.value]} size={14} />
+        <IconCircleFilled color={initialColor()} size={10} />
+        <h4 class={`text-sm text-${initialColor()}-500 `}>{props.value}</h4>
+        <IconChevronDown color={initialColor()} size={14} />
       </button>
 
       <Portal>
         <div
+          onMouseLeave={() => (dropdownRef.style.display = 'none')}
           ref={dropdownRef}
           class="fixed z-[999] hidden"
           style={{
@@ -52,6 +51,7 @@ export const BadgeSelect = (props: BadgeSelectProps) => {
               {(option) => {
                 return (
                   <button
+                    onClick={() => props.onChange(option)}
                     class={`badge badge-lg border-${COLORS[option]}-500  bg-${COLORS[option]}-100  w-full`}
                   >
                     <h4 class={`text-sm text-${COLORS[option]}-500 `}>

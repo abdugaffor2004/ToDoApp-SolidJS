@@ -6,6 +6,7 @@ const BASE_URL = 'http://localhost:3000';
 
 const getTasks = 'get-tasks';
 const createTask = 'create-task';
+const updateTask = 'update-task';
 const deleteTask = 'delete-task';
 
 export const useGetTasks = () => {
@@ -50,6 +51,23 @@ export const useDeleteTask = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [getTasks] });
+    },
+  }));
+};
+
+interface usePutTaskParams {
+  id: string;
+  payload: TaskFormValues;
+}
+
+export const usePutTask = () => {
+  return useMutation<void, Error, usePutTaskParams>(() => ({
+    mutationKey: [updateTask],
+    mutationFn: async ({ id, payload }) => {
+      await fetch(`${BASE_URL}/tasks/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      });
     },
   }));
 };

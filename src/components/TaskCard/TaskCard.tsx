@@ -1,8 +1,11 @@
 import { IconTrash } from '@tabler/icons-solidjs';
-import { createSignal } from 'solid-js';
+import { createEffect, createSignal } from 'solid-js';
 import { BadgeSelect, type Priority } from '../BadgeSelect/BadgeSelect';
 import type { Task } from '../../types/Task';
-import { useDeleteTask } from '../MainPanel/hooks/useTasksQuery';
+import { useDeleteTask, usePutTask } from '../MainPanel/hooks/useTasksQuery';
+import { createStore } from 'solid-js/store';
+import { Input } from '../Input';
+import { Textarea } from '../Textarea';
 
 interface TaskProps {
   task: Task;
@@ -11,11 +14,20 @@ interface TaskProps {
 export const PRIORITIES: Priority[] = ['low', 'medium', 'high'];
 
 export const TaskCard = (props: TaskProps) => {
-  const [checked, setIsChecked] = createSignal(props.task.isCompleted);
   const [isOpen, setIsOpen] = createSignal(false);
-  const hasDescription = props.task.description;
+  const [isTitleEditable, setIsTitleEditable] = createSignal(false);
+  const [isDescriptionEditable, setIsDescriptionEditable] = createSignal(false);
+
+  const [store, setStore] = createStore<Task>(props.task);
+  const hasDescription = store.description;
 
   const { mutate: deleteTask } = useDeleteTask();
+  const { mutate: updateTask } = usePutTask();
+
+  createEffect(() => {
+    updateTask({ id: store.id, payload: { ...store } });
+  });
+
   return (
     <div
       class={`collapse bg-base-100 border border-base-300 shadow-xs ${
@@ -28,15 +40,33 @@ export const TaskCard = (props: TaskProps) => {
       >
         <div class="flex items-center gap-3">
           <input
-            checked={checked()}
+            checked={store.isCompleted}
             type="checkbox"
             class="checkbox checkbox-primary mr-2 align-middle rounded-sm"
             onClick={(e) => {
               e.stopPropagation();
-              setIsChecked((prev) => !prev);
+              setStore('isCompleted', !store.isCompleted);
             }}
           />
-          <h3 class="text-xl">{props.task.title} </h3>
+
+          {isTitleEditable() ? (
+            <Input
+              autofocus
+              onClick={(e) => e.stopPropagation()}
+              onBlur={() => setIsTitleEditable(false)}
+              class="input input-sm focus:border-0"
+              value={store.title}
+              onChange={(e) => setStore('title', e.currentTarget.value)}
+            />
+          ) : (
+            <h3
+              onClick={(e) => e.stopPropagation()}
+              onDblClick={() => setIsTitleEditable(true)}
+              class="text-xl"
+            >
+              {props.task.title}
+            </h3>
+          )}
         </div>
 
         <div
@@ -44,9 +74,9 @@ export const TaskCard = (props: TaskProps) => {
           class="flex gap-4 items-center"
         >
           <BadgeSelect
-            onChange={() => {}}
+            onChange={(priorityValue) => setStore('priority', priorityValue)}
             options={PRIORITIES}
-            value={props.task.priority}
+            value={store.priority}
           />
           <button
             onClick={() => deleteTask(props.task.id)}
@@ -57,7 +87,24 @@ export const TaskCard = (props: TaskProps) => {
         </div>
       </div>
 
-      <div class="collapse-content text-md">{props.task.description}</div>
+      <div class="collapse-content text-md">
+        {isDescriptionEditable() ? (
+          <Textarea
+            autofocus
+            value={store.description}
+            onBlur={() => setIsDescriptionEditable(false)}
+            onChange={(e) => setStore('description', e.currentTarget.value)}
+            class="textarea focus:border-0"
+          />
+        ) : (
+          <p
+            onClick={(e) => e.stopPropagation()}
+            onDblClick={() => setIsDescriptionEditable(true)}
+          >
+            {props.task.description}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

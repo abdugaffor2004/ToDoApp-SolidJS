@@ -1,4 +1,4 @@
-import { ErrorBoundary, For, Suspense } from 'solid-js';
+import { For, Suspense } from 'solid-js';
 import { MainPanelTopSection } from './MainPanelTopSection';
 import { TaskCard } from '../TaskCard/TaskCard';
 import { useGetTasks } from './hooks/useTasksQuery';
