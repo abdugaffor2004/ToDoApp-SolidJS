@@ -1,20 +1,26 @@
 import { IconAlarm } from '@tabler/icons-solidjs';
-import { createEffect, createSignal } from 'solid-js';
+import { type Component } from 'solid-js';
 import { TimerCountDown } from './TimerCountDown';
 
-export const TimerToggle = () => {
-  const [isFocusModeOn, setIsFocusModeOn] = createSignal(false);
+interface TimerToggleProps {
+  value: boolean;
+  onChange: (isFocusModeOn: boolean) => void;
+}
 
-  createEffect(() => console.log(isFocusModeOn()));
+export const TimerToggle: Component<TimerToggleProps> = (props) => {
+  const handleTimerButtonClick = () => {
+    props.onChange(!props.value);
+  };
+
   return (
     <button
-      onClick={() => setIsFocusModeOn((prev) => !prev)}
+      onClick={handleTimerButtonClick}
       class={`btn  text-black text-[1rem]  ${
-        isFocusModeOn() ? 'bg-red-500 text-white' : 'bg-white'
+        props.value ? 'bg-red-500 text-white' : 'bg-white'
       }`}
     >
       <IconAlarm size={22} />
-      {isFocusModeOn() ? <TimerCountDown duration={30} /> : 'Focus mode'}
+      {props.value ? <TimerCountDown duration={30} /> : 'Focus mode'}
     </button>
   );
 };

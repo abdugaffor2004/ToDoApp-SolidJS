@@ -1,5 +1,10 @@
 import { IconTrash } from '@tabler/icons-solidjs';
-import { createEffect, createSignal } from 'solid-js';
+import {
+  createEffect,
+  createSignal,
+  mergeProps,
+  type Component,
+} from 'solid-js';
 import { BadgeSelect, type Priority } from '../BadgeSelect/BadgeSelect';
 import type { Task } from '../../types/Task';
 import { useDeleteTask, usePutTask } from '../MainPanel/hooks/useTasksQuery';
@@ -9,14 +14,17 @@ import { Textarea } from '../Textarea';
 
 interface TaskProps {
   task: Task;
+  isHidden?: boolean;
 }
 
 export const PRIORITIES: Priority[] = ['low', 'medium', 'high'];
 
-export const TaskCard = (props: TaskProps) => {
+export const TaskCard: Component<TaskProps> = (initialProps) => {
   const [isOpen, setIsOpen] = createSignal(false);
   const [isTitleEditable, setIsTitleEditable] = createSignal(false);
   const [isDescriptionEditable, setIsDescriptionEditable] = createSignal(false);
+
+  const props = mergeProps({ isHidden: false }, initialProps);
 
   const [store, setStore] = createStore<Task>(props.task);
   const hasDescription = store.description;
@@ -32,7 +40,9 @@ export const TaskCard = (props: TaskProps) => {
     <div
       class={`collapse bg-base-100 border border-base-300 shadow-xs ${
         hasDescription && 'collapse-arrow'
-      }  ${isOpen() && hasDescription ? 'collapse-open' : 'collapse-close'}`}
+      }  ${isOpen() && hasDescription ? 'collapse-open' : 'collapse-close'} ${
+        props.isHidden ? 'hidden' : 'block'
+      }`}
     >
       <div
         class="collapse-title font-semibold cursor-pointer flex justify-between"
@@ -62,7 +72,9 @@ export const TaskCard = (props: TaskProps) => {
             <h3
               onClick={(e) => e.stopPropagation()}
               onDblClick={() => setIsTitleEditable(true)}
-              class="text-xl"
+              class={`text-xl ${
+                props.task.isCompleted && 'line-through opacity-40'
+              }`}
             >
               {props.task.title}
             </h3>
@@ -77,7 +89,7 @@ export const TaskCard = (props: TaskProps) => {
             onChange={(priorityValue) => setStore('priority', priorityValue)}
             options={PRIORITIES}
             value={store.priority}
-            offset={{top:10, left: 0}}
+            offset={{ top: 10, left: 0 }}
           />
           <button
             onClick={() => deleteTask(props.task.id)}
@@ -101,6 +113,7 @@ export const TaskCard = (props: TaskProps) => {
           <p
             onClick={(e) => e.stopPropagation()}
             onDblClick={() => setIsDescriptionEditable(true)}
+            class={`${props.task.isCompleted && 'opacity-40'}`}
           >
             {props.task.description}
           </p>
