@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Suspense } from 'solid-js';
+import { createSignal, For, Suspense } from 'solid-js';
 import { TaskCard } from '../TaskCard/TaskCard';
 import { useGetTasks } from './hooks/useTasksQuery';
 import { TimerToggle } from '../TimerToggle';
