@@ -65,7 +65,7 @@ export const BadgeSelect = (initialProps: BadgeSelectProps) => {
                 return (
                   <button
                     onClick={() => props.onChange(option)}
-                    class='badge bg-gray-200 badge-lg  w-full cursor-pointer'
+                    class="badge bg-gray-200 badge-lg  w-full cursor-pointer"
                   >
                     <h4 class={`text-sm text-${COLORS[option]}-500 `}>
                       {option}
