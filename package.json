@@ -7,9 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "server": "json-server db.json  --port 3000",
-    "app": "npm-run-all --parallel dev server",
-    "postinstall": "node scripts/initial-setup.cjs"
+    "server": "json-server server/db.json  --port 3000",
+    "app": "npm-run-all --parallel dev server"
+ 
   },
   "dependencies": {
     "@tabler/icons-solidjs": "^3.33.0",

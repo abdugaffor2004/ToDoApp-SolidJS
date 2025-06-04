@@ -1,0 +1,20 @@
+services:
+  client:
+    build: .
+    ports:
+      - '5173:5173'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    tty: true
+    environment:
+      - VITE_HOST=0.0.0.0
+    container_name: frontend-solidjs
+
+  server:
+    build:
+      context: ./server
+    ports:
+      - '3000:3000'
+    restart: unless-stopped
+    container_name: todoapp-backend
