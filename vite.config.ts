@@ -7,10 +7,7 @@ export default defineConfig({
   server: {
     watch: {
       ignored: '**/db.json',
-      usePolling: true,
     },
-    host: '0.0.0.0',
-    port: 5173,
     allowedHosts: true,
   },
 });
